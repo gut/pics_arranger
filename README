@@ -1,0 +1,32 @@
+Pics_arranger
+============
+
+These scripts were made so it's easier to sort a lot of pictures (probably from
+different resources/cameras) in the same chronological order. My problem was
+with undefined timezone so the script applies the difference of hours (if you
+need to diminish this granularity, fell free to change the code, it's simple
+enough)
+
+Dependencies:
+-------------
+
+python v2.X and pyexiv2 library (ubuntu package name: python-pyexiv2)
+
+
+How to use it:
+--------------
+
+To change the hours (or any other greater aspect, like day or month):
+./chgPicTime.py
+e.g: change the picture photo.jpg to increase 2 hours:
+./chgPicTime.py 2 photo.jpg
+e.g: change the picture photo.jpg to decrease 2 hours:
+./chgPicTime.py -- -2 photo.jpg
+    ps: the -- is needed or else the optparse lib will think that "-2" is a key
+    argument.
+
+To sort the pics:
+./renomPicsByDate.py
+To write down the changes you'll have to type --write or -w.
+To view the timestamps that are being sorted, run it with --verbose or -v.
+
