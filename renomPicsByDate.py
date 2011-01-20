@@ -58,6 +58,11 @@ def renomPicsByDate(write = False, verbose = False, directory = '.'):
         print "%s => %s" % (f[1], new_filepath)
         if write:
             rename(f[1], new_filepath)
+    if write:
+        print "Changes were written to disk"
+    else:
+        print " (use the --write option to write the changes)"
+        print " !!! Remember to back up your files before writing !!!"
 
 if __name__ == "__main__":
     from sys import argv, exit
