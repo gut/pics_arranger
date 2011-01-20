@@ -38,6 +38,11 @@ def renomPicsByDate(write = False, verbose = False, directory = '.'):
     from glob import glob
     from os import path,rename
 
+    if not path.isdir(directory):
+        from sys import exit
+        print "Enter a valid directory name"
+        exit(2)
+
     images_and_keys = []
     for f in glob(path.join(directory, "*.jpg")):
         image = ImageTime(f)
