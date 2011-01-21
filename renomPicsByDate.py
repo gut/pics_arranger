@@ -49,15 +49,17 @@ def renomPicsByDate(write = False, verbose = False, directory = '.'):
         images_and_keys.append((image.time, image.filepath))
 
     images_and_keys.sort(key=lambda tup : tup[0])  # sort by the first element of the tuple
-
     series_format = "%0" + repr(getAmmountOfDigits(len(images_and_keys))) + "d.jpg"
+
     for n, f in enumerate(images_and_keys):
-        new_filepath = path.join(directory, series_format % n)
+        new_filepath = path.join(directory, series_format % n + 1)  # starts at number 1
         if verbose:
             print "Time: %s" % f[0].ctime(),
         print "%s => %s" % (f[1], new_filepath)
         if write:
             rename(f[1], new_filepath)
+
+    # feedback
     if write:
         print "Changes were written to disk"
     else:
