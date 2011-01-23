@@ -78,9 +78,9 @@ class ImageTime:
         self.exif.writeMetadata()
         return True
 
+# this was very useful: http://www.saltycrane.com/blog/2008/11/python-datetime-time-conversions/
 def _epochToTimeTuple(epoch):
     return time.gmtime(epoch)
-
 def _timeTupleToEpoch(time_tuple):
     return calendar.timegm(time_tuple)
 
