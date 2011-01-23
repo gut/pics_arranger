@@ -44,7 +44,7 @@ def renomPicsByDate(write = False, verbose = False, directory = '.'):
         exit(2)
 
     images_and_keys = []
-    for f in glob(path.join(directory, "*.jpg")):
+    for f in glob(path.join(directory, "*.[Jj][Pp][Gg]")):
         image = ImageTime(f)
         images_and_keys.append((image.time, image.filepath))
 
