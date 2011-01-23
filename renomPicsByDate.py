@@ -54,7 +54,7 @@ def renomPicsByDate(write = False, verbose = False, directory = '.'):
     series_format = "%0" + repr(getAmmountOfDigits(len(images_and_keys))) + "d.jpg"
 
     for n, f in enumerate(images_and_keys):
-        new_filepath = path.join(directory, series_format % n + 1)  # starts at number 1
+        new_filepath = path.join(directory, series_format % (n + 1))  # starts at number 1
         if verbose:
             print "Time: %s" % f[0].ctime(),
         print "%s => %s" % (f[1], new_filepath)
