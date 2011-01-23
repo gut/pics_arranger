@@ -45,6 +45,8 @@ def renomPicsByDate(write = False, verbose = False, directory = '.'):
 
     images_and_keys = []
     for f in glob(path.join(directory, "*.[Jj][Pp][Gg]")):
+        if verbose:
+            print "Analysing %s" % f
         image = ImageTime(f)
         images_and_keys.append((image.time, image.filepath))
 
