@@ -27,7 +27,7 @@ except ImportError:
     print "Install pyexiv2 (tip: on ubuntu the package is python-pyexiv2)"
     exit(1)
 
-import os, datetime, time
+import os, datetime, calendar, time
 
 # some constraints
 _TYPE_SYSTEM = 0
@@ -46,13 +46,13 @@ class ImageTime:
         self.exif.readMetadata()
 
         seconds_from_epoch = os.path.getmtime(filepath)
-        self.time = _epochToDatetime(seconds_from_epoch)
+        self.utctime = _epochToTimeTuple(seconds_from_epoch)
         self.time_type = _TYPE_SYSTEM
 
         # now trying with exif
         try:
             # most trustful time tag
-            self.time = self.exif['Exif.Photo.DateTimeOriginal']
+            self.utctime = self.exif['Exif.Photo.DateTimeOriginal'].utctimetuple()
             self.time_type = _TYPE_ORIGINAL
             return  # best time that we can get!
         except IndexError:
@@ -60,28 +60,37 @@ class ImageTime:
 
         try:
             # this is just system time... when we have it
-            self.time = self.exif['Exif.Image.DateTime']
+            self.utctime = self.exif['Exif.Image.DateTime'].utctimetuple()
             self.time_type = _TYPE_DATETIME
         except IndexError:
             pass
 
     def applyHourDelta(self, hours_delta):
         seconds_delta = hours_delta * 60 * 60
-        new_time_epoch = _datetimeToEpoch(self.time) + seconds_delta
-        new_time_datetime = _epochToDatetime(new_time_epoch)
+        new_time_epoch = _timeTupleToEpoch(self.utctime) + seconds_delta
+        new_time_datetime = _epochToTimeTuple(new_time_epoch)
 
         # always apply on the most trustful time tag
-        self.exif['Exif.Photo.DateTimeOriginal'] = new_time_datetime
+        self.exif['Exif.Photo.DateTimeOriginal'] = datetime.datetime(*new_time_datetime[0:6])
         # redefine this variable
-        self.time = self.exif['Exif.Photo.DateTimeOriginal']
+        self.utctime = self.exif['Exif.Photo.DateTimeOriginal'].utctimetuple()
         # and save
         self.exif.writeMetadata()
         return True
 
-def _epochToDatetime(epoch):
-    t = time.localtime(epoch)
-    return datetime.datetime(t.tm_year, t.tm_mon, t.tm_mday, t.tm_hour, t.tm_sec)
+def _epochToTimeTuple(epoch):
+    return time.gmtime(epoch)
 
-def _datetimeToEpoch(date_time):
-    return time.mktime(date_time.timetuple())
+def _timeTupleToEpoch(time_tuple):
+    return calendar.timegm(time_tuple)
+
+def timeTupleToString(time_tuple):
+    return "%(year)04d:%(mon)02d:%(mday)02d %(hour)02d:%(min)02d:%(sec)02d" % {
+        'year' : time_tuple.tm_year,
+        'mon' : time_tuple.tm_mon,
+        'mday' : time_tuple.tm_mday,
+        'hour' : time_tuple.tm_hour,
+        'min' : time_tuple.tm_min,
+        'sec' : time_tuple.tm_sec,
+    }
 

@@ -22,7 +22,7 @@ __VERSION__ = 0.2
 MIN_ARGS = 2
 
 import os
-from imageTime import ImageTime
+from imageTime import ImageTime, timeTupleToString
 
 def chgPicTime(delta, files, quiet = False):
     """
@@ -30,9 +30,9 @@ def chgPicTime(delta, files, quiet = False):
     """
     for f in files:
         img_datetime = ImageTime(f)
-        old_time = img_datetime.time.ctime()
+        old_time = timeTupleToString(img_datetime.utctime)
         if img_datetime.applyHourDelta(delta):
-            new_time = img_datetime.time.ctime()
+            new_time = timeTupleToString(img_datetime.utctime)
             if not quiet:
                 print 'Changed "%s" from "%s" to "%s"' % (os.path.basename(f), old_time, new_time)
         else:

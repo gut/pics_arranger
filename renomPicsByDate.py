@@ -48,7 +48,7 @@ def renomPicsByDate(write = False, verbose = False, directory = '.'):
         if verbose:
             print "Analysing %s" % f
         image = ImageTime(f)
-        images_and_keys.append((image.time, image.filepath))
+        images_and_keys.append((image.utctime, image.filepath))
 
     images_and_keys.sort(key=lambda tup : tup[0])  # sort by the first element of the tuple
     series_format = "%0" + repr(getAmmountOfDigits(len(images_and_keys))) + "d.jpg"
@@ -56,7 +56,7 @@ def renomPicsByDate(write = False, verbose = False, directory = '.'):
     for n, f in enumerate(images_and_keys):
         new_filepath = path.join(directory, series_format % (n + 1))  # starts at number 1
         if verbose:
-            print "Time: %s" % f[0].ctime(),
+            print "Time: %s" % timeTupleToString(f[0]),
         print "%s => %s" % (f[1], new_filepath)
         if write:
             rename(f[1], new_filepath)
