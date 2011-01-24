@@ -24,19 +24,21 @@ MIN_ARGS = 2
 import os
 from imageTime import ImageTime, timeTupleToString
 
-def chgPicTime(delta, files, quiet = False):
+def chgPicTime(delta, files, seconds_option = False, quiet = False):
     """
-    Apply @DELTA hours to the @FILES' exif tags
+    Apply @DELTA hours (or seconds, if chosen) to the @FILES' exif tags
     """
     for f in files:
         img_datetime = ImageTime(f)
         old_time = timeTupleToString(img_datetime.utctime)
-        if img_datetime.applyHourDelta(delta):
-            new_time = timeTupleToString(img_datetime.utctime)
-            if not quiet:
-                print 'Changed "%s" from "%s" to "%s"' % (os.path.basename(f), old_time, new_time)
+        if seconds_option:
+            img_datetime.applySecondsDelta(delta)
         else:
-            print 'FAILED to change "%s" from "%s" to "%s"' % (os.path.basename(f), old_time, new_time)
+            img_datetime.applyHourDelta(delta)
+
+        new_time = timeTupleToString(img_datetime.utctime)
+        if not quiet:
+            print 'Changed "%s" from "%s" to "%s"' % (os.path.basename(f), old_time, new_time)
 
 
 def hintForNegativeDelta(argv):
@@ -65,6 +67,9 @@ if __name__ == "__main__":
             # default_value],
         'q' : ['quiet',
             "Avoid showing output",
+            False],
+        's' : ['seconds',
+            "Apply the @DELTA in seconds, not in hours",
             False],
     }
 
@@ -103,5 +108,5 @@ Try `%s --help' for more information""" % args[0].split(sep)[-1]
         print "Why run this with the change of 0 hours!?"
         exit(2)
 
-    chgPicTime(delta, args[2:], opt.q)
+    chgPicTime(delta, args[2:], opt.s, opt.q)
 

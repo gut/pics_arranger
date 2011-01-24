@@ -66,7 +66,9 @@ class ImageTime:
             pass
 
     def applyHourDelta(self, hours_delta):
-        seconds_delta = hours_delta * 60 * 60
+        self.applySecondsDelta(hours_delta * 60 * 60)
+
+    def applySecondsDelta(self, seconds_delta):
         new_time_epoch = _timeTupleToEpoch(self.utctime) + seconds_delta
         new_time_datetime = _epochToTimeTuple(new_time_epoch)
 
