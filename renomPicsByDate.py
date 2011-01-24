@@ -29,10 +29,11 @@ def getAmmountOfDigits(size):
     from math import ceil, log
     return int(ceil(log(size, 10)))  # log of base 10 in the length
 
-def renomPicsByDate(write = False, verbose = False, directory = '.'):
+def renomPicsByDate(write = False, script = False, verbose = False, directory = '.'):
     """
     Check every picture timestamp (based on the exif) of the directory
-    @DIRECTORY and rename all of them by their chronological order.
+    @DIRECTORY and rename (if --write mode) all of them by their chronological order.
+    Also can generate the set of mv commands if --shell-script mode is used.
     Default @DIRECTORY: .
     """
     from glob import glob
@@ -43,10 +44,14 @@ def renomPicsByDate(write = False, verbose = False, directory = '.'):
         print "Enter a valid directory name"
         exit(2)
 
+    if script:
+        print "#!/bin/sh"
+        print
+
     images_and_keys = []
     for f in glob(path.join(directory, "*.[Jj][Pp][Gg]")):
         if verbose:
-            print "Analysing %s" % f
+            print "# Analysing %s" % f
         image = ImageTime(f)
         images_and_keys.append((image.utctime, image.filepath))
 
@@ -56,17 +61,22 @@ def renomPicsByDate(write = False, verbose = False, directory = '.'):
     for n, f in enumerate(images_and_keys):
         new_filepath = path.join(directory, series_format % (n + 1))  # starts at number 1
         if verbose:
-            print "Time: %s" % timeTupleToString(f[0]),
-        print "%s => %s" % (f[1], new_filepath)
+            print "# Time: %s" % timeTupleToString(f[0]),
+
+        if script:
+            print 'mv "%s" "%s"' % (f[1], new_filepath)
+        else:  # don't print this line if on --shell-script mode
+            print "%s => %s" % (f[1], new_filepath)
+
         if write:
             rename(f[1], new_filepath)
 
     # feedback
     if write:
-        print "Changes were written to disk"
-    else:
-        print " (use the --write option to write the changes)"
-        print " !!! Remember to back up your files before writing !!!"
+        print "# Changes were written to disk"
+    elif not script:
+        print "#  (use the --write option to write the changes)"
+        print "#  !!! Remember to back up your files before writing !!!"
 
 if __name__ == "__main__":
     from sys import argv, exit
@@ -79,6 +89,9 @@ if __name__ == "__main__":
             # default_value],
         'v' : ['verbose',
             "Shows more info about the process",
+            False],
+        's' : ['shell-script',
+            "Generate a shell-script with the mv's commands",
             False],
         'w' : ['write',
             "Write changes to files",
@@ -109,7 +122,7 @@ Try `%s --help' for more information""" % args[0].split(sep)[-1]
         exit(1)
 
     if len(args) == 2:  # optional directory
-        renomPicsByDate(opt.w, opt.v, args[1])
+        renomPicsByDate(opt.w, opt.s, opt.v, args[1])
     else:
-        renomPicsByDate(opt.w, opt.v)
+        renomPicsByDate(opt.w, opt.s, opt.v)
 
