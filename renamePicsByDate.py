@@ -29,7 +29,7 @@ def getAmmountOfDigits(size):
     from math import ceil, log
     return int(ceil(log(size, 10)))  # log of base 10 in the length
 
-def renomPicsByDate(write = False, script = False, verbose = False, directory = '.'):
+def renamePicsByDate(write = False, script = False, verbose = False, directory = '.'):
     """
     Check every picture timestamp (based on the exif) of the directory
     @DIRECTORY and rename (if --write mode) all of them by their chronological order.
@@ -99,7 +99,7 @@ if __name__ == "__main__":
     }
 
     options_list = ' '.join(["[-%s --%s]" % (o, options[o][0]) for o in options])
-    desc = renomPicsByDate.__doc__.replace('    ','')
+    desc = renamePicsByDate.__doc__.replace('    ','')
     parser = OptionParser("%%prog %s [DIRECTORY]" % options_list,
             description=desc,
             version="%%prog %s" % __VERSION__)
@@ -122,7 +122,7 @@ Try `%s --help' for more information""" % args[0].split(sep)[-1]
         exit(1)
 
     if len(args) == 2:  # optional directory
-        renomPicsByDate(opt.w, opt.s, opt.v, args[1])
+        renamePicsByDate(opt.w, opt.s, opt.v, args[1])
     else:
-        renomPicsByDate(opt.w, opt.s, opt.v)
+        renamePicsByDate(opt.w, opt.s, opt.v)
 

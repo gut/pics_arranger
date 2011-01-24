@@ -26,7 +26,7 @@ e.g: change the picture photo.jpg to decrease 2 hours:
     argument.
 
 To sort the pics:
-./renomPicsByDate.py
+./renamePicsByDate.py
 To write down the changes you'll have to type --write or -w.
 To view the timestamps that are being sorted, run it with --verbose or -v.
 
